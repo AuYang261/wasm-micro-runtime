@@ -129,6 +129,7 @@ include (${WAMR_ROOT_DIR}/build-scripts/runtime_lib.cmake)
 
 check_pie_supported()
 add_library(vmlib ${WAMR_RUNTIME_LIB_SOURCE})
+message(STATUS "WAMR_RUNTIME_LIB_SOURCE: ${WAMR_RUNTIME_LIB_SOURCE}")
 set_target_properties (vmlib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
@@ -157,12 +158,16 @@ endif ()
 include (${SHARED_DIR}/utils/uncommon/shared_uncommon.cmake)
 
 add_executable (iwasm main.c ${UNCOMMON_SHARED_SOURCE})
+message(STATUS "UNCOMMON_SHARED_SOURCE: ${UNCOMMON_SHARED_SOURCE}")
 
 set_target_properties (iwasm PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 install (TARGETS iwasm DESTINATION bin)
 
 target_link_libraries (iwasm vmlib ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} -lm -ldl -lpthread)
+message(STATUS "LLVM_AVAILABLE_LIBS: ${LLVM_AVAILABLE_LIBS}")
+message(STATUS "UV_A_LIBS: ${UV_A_LIBS}")
+message(STATUS "WASI_NN_LIBS: ${WASI_NN_LIBS}")
 
 add_library (libiwasm SHARED ${WAMR_RUNTIME_LIB_SOURCE})
 

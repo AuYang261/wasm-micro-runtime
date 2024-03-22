@@ -1,0 +1,2 @@
+/home/auyang/test/wasm-micro-runtime/core/shared/utils/uncommon/bh_getopt.c
+/home/auyang/test/wasm-micro-runtime/core/shared/utils/uncommon/bh_read_file.c
