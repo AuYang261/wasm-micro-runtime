@@ -15,6 +15,8 @@ CURR_PATH=$(cd $(dirname $0) && pwd -P)
     -o test_tensorflow.wasm \
     test_tensorflow.c utils.c
 
+cp test_tensorflow.wasm ~/ruxos/apps/c/wamr/rootfs/
+
 # TFLite models to use in the tests
 
 cd ${CURR_PATH}/models
@@ -34,6 +36,8 @@ cd ${CURR_PATH}
     -I../include -I../src/utils \
     -o test_tensorflow_quantized.wasm \
     test_tensorflow_quantized.c utils.c
+
+cp test_tensorflow_quantized.wasm ~/ruxos/apps/c/wamr/rootfs/
 
 cd ${CURR_PATH}/models
 python3 quantized.py
