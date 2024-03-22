@@ -166,8 +166,7 @@ install (TARGETS iwasm DESTINATION bin)
 
 # libstdc++
 # It's a temporary solution to link libstdc++ statically.
-# It's necessary to modify build/CmakeFiles/iwasm.dir/link.txt to put it in the end of the link command manually.
-target_link_libraries (iwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} /opt/x86_64-linux-musl-cross/x86_64-linux-musl/lib/libstdc++.a)
+target_link_libraries (iwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS})
 
 # add_library (libiwasm STATIC main.c ${UNCOMMON_SHARED_SOURCE} ${WAMR_RUNTIME_LIB_SOURCE})
 
@@ -177,4 +176,4 @@ target_link_libraries (iwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS}
 
 # set_target_properties (libiwasm PROPERTIES OUTPUT_NAME iwasm)
 
-# target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} /opt/x86_64-linux-musl-cross/x86_64-linux-musl/lib/libstdc++.a)
+# target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS})
