@@ -4,7 +4,9 @@
 cmake_minimum_required (VERSION 3.14)
 
 set (CMAKE_C_COMPILER "aarch64-linux-musl-gcc")
-set (CMAKE_CXX_COMPILER "aarch64-linux-musl-gcc")
+set (CMAKE_CXX_COMPILER "aarch64-linux-musl-g++")
+set (CMAKE_AR "aarch64-linux-musl-ar" CACHE FILEPATH "" FORCE)
+set (CMAKE_RANLIB "aarch64-linux-musl-ranlib")
 
 include(CheckPIESupported)
 
@@ -131,9 +133,8 @@ set (WAMR_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/../../..)
 include (${WAMR_ROOT_DIR}/build-scripts/runtime_lib.cmake)
 
 check_pie_supported()
-add_library(vmlib ${WAMR_RUNTIME_LIB_SOURCE})
-message(STATUS "WAMR_RUNTIME_LIB_SOURCE: ${WAMR_RUNTIME_LIB_SOURCE}")
-set_target_properties (vmlib PROPERTIES POSITION_INDEPENDENT_CODE ON)
+# add_library(vmlib ${WAMR_RUNTIME_LIB_SOURCE})
+# set_target_properties (vmlib PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--gc-sections")
 
@@ -160,22 +161,19 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat -Wformat-securit
 
 include (${SHARED_DIR}/utils/uncommon/shared_uncommon.cmake)
 
-add_executable (iwasm main.c ${UNCOMMON_SHARED_SOURCE})
-message(STATUS "UNCOMMON_SHARED_SOURCE: ${UNCOMMON_SHARED_SOURCE}")
+add_library (iwasm main.c ${UNCOMMON_SHARED_SOURCE} ${WAMR_RUNTIME_LIB_SOURCE})
 
 set_target_properties (iwasm PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 install (TARGETS iwasm DESTINATION bin)
 
-target_link_libraries (iwasm vmlib ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} -lm -ldl -lpthread)
-message(STATUS "LLVM_AVAILABLE_LIBS: ${LLVM_AVAILABLE_LIBS}")
-message(STATUS "UV_A_LIBS: ${UV_A_LIBS}")
-message(STATUS "WASI_NN_LIBS: ${WASI_NN_LIBS}")
+target_link_libraries (iwasm ${WAMR_RUNTIME_LIB_SOURCE} ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS})
 
-add_library (libiwasm SHARED ${WAMR_RUNTIME_LIB_SOURCE})
+# add_library (libiwasm SHARED ${WAMR_RUNTIME_LIB_SOURCE})
 
-install (TARGETS libiwasm DESTINATION lib)
+# install (TARGETS libiwasm DESTINATION lib)
 
-set_target_properties (libiwasm PROPERTIES OUTPUT_NAME iwasm)
+# set_target_properties (libiwasm PROPERTIES OUTPUT_NAME iwasm)
 
-target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} -lm -ldl -lpthread)
+# target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} -lm -ldl -lpthread)
+
