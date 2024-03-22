@@ -3,6 +3,9 @@
 
 cmake_minimum_required (VERSION 3.14)
 
+set (CMAKE_C_COMPILER "aarch64-linux-musl-gcc")
+set (CMAKE_CXX_COMPILER "aarch64-linux-musl-gcc")
+
 include(CheckPIESupported)
 
 project (iwasm)
@@ -139,13 +142,13 @@ set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Wformat -Wformat-security -W
 
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat -Wformat-security -Wno-unused")
 
-if (WAMR_BUILD_TARGET MATCHES "X86_.*" OR WAMR_BUILD_TARGET STREQUAL "AMD_64")
-  if (NOT (CMAKE_C_COMPILER MATCHES ".*clang.*" OR CMAKE_C_COMPILER_ID MATCHES ".*Clang"))
-    set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mindirect-branch-register")
-    set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mindirect-branch-register")
-    # UNDEFINED BEHAVIOR, refer to https://en.cppreference.com/w/cpp/language/ub
-  endif ()
-endif ()
+# if (WAMR_BUILD_TARGET MATCHES "X86_.*" OR WAMR_BUILD_TARGET STREQUAL "AMD_64")
+#   if (NOT (CMAKE_C_COMPILER MATCHES ".*clang.*" OR CMAKE_C_COMPILER_ID MATCHES ".*Clang"))
+#     set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -mindirect-branch-register")
+#     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mindirect-branch-register")
+#     # UNDEFINED BEHAVIOR, refer to https://en.cppreference.com/w/cpp/language/ub
+#   endif ()
+# endif ()
 
 # The following flags are to enhance security, but it may impact performance,
 # we disable them by default.
