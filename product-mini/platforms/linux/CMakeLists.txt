@@ -3,11 +3,6 @@
 
 cmake_minimum_required (VERSION 3.14)
 
-set (CMAKE_C_COMPILER "aarch64-linux-musl-gcc")
-set (CMAKE_CXX_COMPILER "aarch64-linux-musl-g++")
-set (CMAKE_AR "aarch64-linux-musl-ar" CACHE FILEPATH "" FORCE)
-set (CMAKE_RANLIB "aarch64-linux-musl-ranlib")
-
 include(CheckPIESupported)
 
 project (iwasm)
@@ -161,19 +156,25 @@ set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat -Wformat-securit
 
 include (${SHARED_DIR}/utils/uncommon/shared_uncommon.cmake)
 
-add_library (iwasm main.c ${UNCOMMON_SHARED_SOURCE} ${WAMR_RUNTIME_LIB_SOURCE})
+# some source files are compiled twice, because it's seems that target_link_libraries are invalid.
+
+add_executable (iwasm main.c ${UNCOMMON_SHARED_SOURCE} ${WAMR_RUNTIME_LIB_SOURCE})
 
 set_target_properties (iwasm PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 install (TARGETS iwasm DESTINATION bin)
 
-target_link_libraries (iwasm ${WAMR_RUNTIME_LIB_SOURCE} ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS})
+# libstdc++
+# It's a temporary solution to link libstdc++ statically.
+# It's necessary to modify build/CmakeFiles/iwasm.dir/link.txt to put it in the end of the link command manually.
+target_link_libraries (iwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} /opt/x86_64-linux-musl-cross/x86_64-linux-musl/lib/libstdc++.a)
 
-# add_library (libiwasm SHARED ${WAMR_RUNTIME_LIB_SOURCE})
+# add_library (libiwasm STATIC main.c ${UNCOMMON_SHARED_SOURCE} ${WAMR_RUNTIME_LIB_SOURCE})
 
 # install (TARGETS libiwasm DESTINATION lib)
 
+# set_target_properties (libiwasm PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
 # set_target_properties (libiwasm PROPERTIES OUTPUT_NAME iwasm)
 
-# target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} -lm -ldl -lpthread)
-
+# target_link_libraries (libiwasm ${LLVM_AVAILABLE_LIBS} ${UV_A_LIBS} ${WASI_NN_LIBS} /opt/x86_64-linux-musl-cross/x86_64-linux-musl/lib/libstdc++.a)
